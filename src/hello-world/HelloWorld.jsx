@@ -1,3 +1,4 @@
+import './HelloWorld.css'
 export default function HelloWorld() {
     const props={
         text:"Hello World From Spread Syntax"
@@ -12,7 +13,7 @@ export default function HelloWorld() {
 
 function HeaderHelloWorld({text="No Text Found"}) {
     return (
-        <h1 style={{ color:"red", backgroundColor:"aqua" }}>{text.toUpperCase()}</h1>
+        <h1 className='title'>{text.toUpperCase()}</h1>
     )
 }
 
@@ -23,6 +24,6 @@ function ParagraphHelloWorld() {
         backgroundColor:"yellow"
     }
     return (
-        <p style={style}>{text.toLowerCase()}</p>
+        <p className='content'>{text.toLowerCase()}</p>
     )
 }
