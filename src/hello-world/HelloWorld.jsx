@@ -1,14 +1,16 @@
 export default function HelloWorld() {
+    const props={
+        text:"Hello World From Spread Syntax"
+    }
     return (
         <div>
-            <HeaderHelloWorld />
+            <HeaderHelloWorld {...props}/>
             <ParagraphHelloWorld />
         </div>
     )
 }
 
-function HeaderHelloWorld() {
-    const text = "Hello World"
+function HeaderHelloWorld({text="No Text Found"}) {
     return (
         <h1 style={{ color:"red", backgroundColor:"aqua" }}>{text.toUpperCase()}</h1>
     )
@@ -22,6 +24,5 @@ function ParagraphHelloWorld() {
     }
     return (
         <p style={style}>{text.toLowerCase()}</p>
-
     )
 }
