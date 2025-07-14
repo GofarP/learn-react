@@ -1,0 +1,18 @@
+.title{
+    text-align: center;
+    background-color: blueviolet;
+    color: white;
+}
+
+.content{
+    text-align: left;
+    background-color: cyan;
+    color: brown;
+    text-align: center;
+}
+
+.footer{
+    text-align: center;
+    background-color: yellow;
+    color: black;
+}
