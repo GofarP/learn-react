@@ -19,10 +19,7 @@ function HeaderHelloWorld({text="No Text Found"}) {
 
 function ParagraphHelloWorld() {
     const text = "Selamat Belajar React"
-    const style={
-        color:"blue",
-        backgroundColor:"yellow"
-    }
+    
     return (
         <p className='content'>{text.toLowerCase()}</p>
     )
