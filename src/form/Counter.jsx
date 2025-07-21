@@ -9,7 +9,7 @@ export default function Counter(){
                 setnewCounter(newCounter => newCounter+1)
             }}>Increment</button>
 
-            <h1>Counter: {newCounter    } </h1>
+            <h1>Counter: {newCounter} </h1>
         </div>
     )
 }
