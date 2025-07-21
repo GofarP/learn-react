@@ -16,3 +16,14 @@
     background-color: yellow;
     color: black;
 }
+
+.btn-submit{
+    background-color: green;
+    color: white;
+}
+
+.text-practice-two {
+    border: 1px solid blue;
+    outline: 2px solid blue;
+    color: green;
+}
