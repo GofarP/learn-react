@@ -11,7 +11,8 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         practice: resolve(__dirname,'index-practice.html'),
-        contact:resolve(__dirname, 'contact.html')
+        contact:resolve(__dirname, 'contact.html'),
+        task:resolve(__dirname, 'task.html')
       }
     }
   }
