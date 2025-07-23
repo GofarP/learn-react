@@ -5,6 +5,7 @@ const initialize = {
   name: "",
   message: "",
 };
+
 export default function ContactForm() {
   const [contact, setContact] = useImmer({
     name: "",
