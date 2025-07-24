@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function CatatanList({ catatans = [], onDelete, onShow, onEdit, onChange }) {
+export default function CatatanList({ catatans = [], onDelete, onShow, onEdit }) {
     const [editIndex, setEditIndex] = useState(null);
     const [editValue, setEditValue] = useState("");
 

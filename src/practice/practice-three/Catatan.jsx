@@ -4,7 +4,6 @@ import CatatanForm from "./CatatanForm";
 
 export default function Catatan() {
     const [catatans, setCatatan]=useImmer([]);
-    const [search, setSearch]=useImmer([]);
 
     function handleSubmit(catatan){
         setCatatan(draft=>{
@@ -28,9 +27,7 @@ export default function Catatan() {
         })
     }
 
-    function handleChange(e){
-        setSearch(e.target.value)
-    }
+
 
     return (
         <div>
