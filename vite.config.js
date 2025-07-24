@@ -14,6 +14,7 @@ export default defineConfig({
         contact:resolve(__dirname, 'contact.html'),
         task:resolve(__dirname, 'task.html'),
         counter:resolve(__dirname,'counter.html'),
+        note:resolve(__dirname,'note.html'),
       }
     }
   }
