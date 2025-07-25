@@ -1,11 +1,13 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'path';
+import tailwindcss from '@tailwindcss/vite';
+import { profile } from 'console';
 
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   build: {
     rollupOptions: {
       input: {
@@ -15,6 +17,8 @@ export default defineConfig({
         task:resolve(__dirname, 'task.html'),
         counter:resolve(__dirname,'counter.html'),
         note:resolve(__dirname,'note.html'),
+        profile:resolve(__dirname,'profile.html'),
+        
       }
     }
   }

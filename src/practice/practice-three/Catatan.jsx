@@ -1,44 +1,58 @@
-import { useImmer } from "use-immer";
-import CatatanList from "./CatatanList";
-import CatatanForm from "./CatatanForm";
+    import { useImmerReducer } from "use-immer";
+    import CatatanForm from "./CatatanForm";
+    import CatatanList from "./CatatanList";
 
-export default function Catatan() {
-    const [catatans, setCatatan]=useImmer([]);
+    export default function Catatan() {
+        
+        const [catatans, dispatch] = useImmerReducer(catatanReducer, []);
 
-    function handleSubmit(catatan){
-        setCatatan(draft=>{
-            draft.push(catatan)
-        })
-    }
+        function handleSubmit(catatan) {
+            dispatch({ type: 'TAMBAH_CATATAN', catatan })
+        }
 
-    function handleDelete(index){
-        setCatatan(draft=>{
-            draft.splice(index,1)
-        })
-    }
+        function handleEdit(id, catatan) {
+            dispatch({ type: 'EDIT_CATATAN', id, catatan })
+        }
 
-    function handleShowIndex(index){
-        alert(`clicking on ${index+1}`)
-    }
 
-    function handleEdit(index, newText){
-        setCatatan(draft=>{
-            draft[index]=newText;
-        })
-    }
+        function handleDelete(id) {
+            dispatch({ type: 'DELETE_CATATAN',id })
+        }
 
 
 
-    return (
-        <div>
-            <CatatanForm onSubmit={handleSubmit}/>
-            <CatatanList 
-            catatans={catatans} 
-            onDelete={handleDelete} 
-            onShow={handleShowIndex} 
-            onEdit={handleEdit}
-            
-            />
-        </div>
-    )
-};
+        function catatanReducer(draft, action) {
+            switch (action.type) {
+                case 'TAMBAH_CATATAN':
+                    draft.push(action.catatan)
+                    break;
+                case 'EDIT_CATATAN': {
+                    const index = draft.findIndex(catatan => catatan.id === action.id);
+
+                    if (index !== -1) {
+                        draft[index].catatan = action.catatan
+                    }
+
+                    break;
+
+                }
+
+                case 'DELETE_CATATAN': {
+                    const index = draft.findIndex(catatan => catatan.id === action.id);
+                    if (index !== -1) {
+                        draft.splice(index, 1)
+                    }
+                }
+
+                default:
+                    break;
+            }
+        }
+
+        return (
+            <div>
+                <CatatanForm onSubmit={handleSubmit} />
+                <CatatanList catatans={catatans} onDelete={handleDelete} onEdit={handleEdit} />
+            </div>
+        )
+    };
