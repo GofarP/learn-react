@@ -1,42 +1,60 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-export default function UserForm({ onSubmit }) {
+export default function UserForm({ onSubmit, editUser }) {
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
+    const [errors, setErrors] = useState({});
 
-    const [empty, setEmpty] = useState(false);
+    useEffect(()=>{
+        if(editUser){
+            setName(editUser.name || "")
+            setEmail(editUser.email || "")
+        }
+    },[editUser]);
 
-    function handleChangeEmail(e) {
-        setEmail(e.target.value);
-    }
-
-    function handleChangeName(e) {
-        setName(e.target.value);
-    }
-
-    function handleClick(e) {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (email === '' || name === '') {
-            setEmpty(true)
-        } else {
-            setEmpty(false)
-            omSubmit?.({ email, name })
-            setEmail("")
-            setName("")
+        try {
+            const res = await axios.post("https://gofarputraperdana.my.id/api/users", {
+                name,
+                email,
+                password,
+                password_confirmation: passwordConfirmation
+            })
+
+            console.log("Berhasil", res.data);
+            setErrors({});
+            setEmail("");
+            setName("");
+            setPassword("");
+            setPasswordConfirmation("");
+
+            onSubmit?.()
+        }
+        catch (e) {
+            const validationErrors = e.response?.data?.errors || {};
+            const formattedErrors = {};
+
+            for (const key in validationErrors) {
+                const val = validationErrors[key];
+                formattedErrors[key] = Array.isArray(val) ? val : [val];
+            }
+
+            setErrors(formattedErrors);
         }
     }
 
     return (
         <div className="min-h-screen w-full bg-blue-500 flex items-center justify-center">
-            <form className="flex flex-col gap-5 w-full max-w-md px-5" onSubmit={handleClick}>
+            <form className="flex flex-col gap-5 w-full max-w-md px-5" onSubmit={handleSubmit}>
                 <div className="flex flex-col">
                     <label htmlFor="email" className="text-white text-lg font-semibold tracking-wider">
                         Email
                     </label>
-
                     <input
                         id="email"
                         type="email"
@@ -44,19 +62,21 @@ export default function UserForm({ onSubmit }) {
                         onChange={(e) => setEmail(e.target.value)}
                         className="py-2 px-3 rounded w-full border border-white bg-white focus:outline-none focus:ring-0 focus:border-transparent"
                     />
-
+                    {errors.email && <p className="text-red-300 text-sm mt-1">{errors.email[0]}</p>}
                 </div>
 
                 <div className="flex flex-col">
                     <label htmlFor="name" className="text-white text-lg font-semibold tracking-wider">
                         Name
                     </label>
-
-                    <input type="text"
+                    <input
+                        type="text"
                         id="name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className="py-2 px-3 rounded w-full border border-white bg-white focus:outline-none focus:ring-0 focus:border-transparent" />
+                        className="py-2 px-3 rounded w-full border border-white bg-white focus:outline-none focus:ring-0 focus:border-transparent"
+                    />
+                    {errors.name && <p className="text-red-300 text-sm mt-1">{errors.name[0]}</p>}
                 </div>
 
                 <div className="flex flex-row gap-4">
@@ -71,6 +91,7 @@ export default function UserForm({ onSubmit }) {
                             onChange={(e) => setPassword(e.target.value)}
                             className="py-2 px-3 rounded border border-white bg-white focus:outline-none focus:ring-0 focus:border-transparent"
                         />
+                        {errors.password && <p className="text-red-300 text-sm mt-1">{errors.password[0]}</p>}
                     </div>
 
                     <div className="flex flex-col flex-1">
@@ -84,22 +105,21 @@ export default function UserForm({ onSubmit }) {
                             onChange={(e) => setPasswordConfirmation(e.target.value)}
                             className="py-2 px-3 rounded border border-white bg-white focus:outline-none focus:ring-0 focus:border-transparent"
                         />
+                        {errors.password_confirmation && (
+                            <p className="text-red-300 text-sm mt-1">{errors.password_confirmation[0]}</p>
+                        )}
                     </div>
-
-
                 </div>
 
                 <div className="flex flex-col flex-1">
                     <button
+                        type="submit"
                         className="mt-4 w-full bg-white text-blue-500 font-bold py-2 px-4 rounded hover:bg-blue-100 transition"
                     >
                         Submit
                     </button>
                 </div>
-
-
-
             </form>
         </div>
-    )
-};
+    );
+}

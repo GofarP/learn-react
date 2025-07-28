@@ -1,26 +1,7 @@
-import { useEffect, useState } from "react"
-import axios from "axios"
-export default function UserList() {
+import { useState } from "react";
 
-    const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [search, setSearch]=useState('');
-
-    useEffect(() => {
-       const loadUsers=async ()=>{
-            try{
-                const res=await axios.get('https://gofarputraperdana.my.id/api/user',{
-                    params:{search}
-                });
-                setUsers(res.data.data)
-                setLoading(false)
-            }
-            catch(err){
-                console.error(err)
-            }
-       }
-       loadUsers()
-    }, [search])
+export default function UserList({ users, onEdit, onDelete, loading }) {
+    const [search, setSearch] = useState("");
 
     return (
         <div className="min-h-screen bg-gray-100 p-4">
@@ -28,7 +9,7 @@ export default function UserList() {
                 <input
                     type="text" placeholder="Cari pengguna..."
                     className="w-full sm:w-auto max-w-sm border border-purple-500 focus:ring-0 focus:outline-0 rounded px-3 py-2"
-                    onChange={e=>setSearch(e.target.value)}
+                    onChange={(e) => setSearch(e.target.value)}
                 />
             </div>
 
@@ -42,29 +23,41 @@ export default function UserList() {
                             <th className="px-4 py-3 text-center">Action</th>
                         </tr>
                     </thead>
-
                     <tbody className="divide-y divide-gray-200 text-center">
                         {loading ? (
                             <tr>
-                                <td colSpan="4" className="py-4">Loading...</td>
+                                <td colSpan="4" className="py-4">Memuat data...</td>
+                            </tr>
+                        ) : users.length === 0 ? (
+                            <tr>
+                                <td colSpan="4" className="py-4">Tidak ada data</td>
                             </tr>
                         ) : (
                             users.map((user, index) => (
-                                <tr key={user.id || index} className="bg-purple-50 ">
-                                    <td className="px-4 py-2">{index +1}</td>
+                                <tr key={user.id || index} className="bg-purple-50">
+                                    <td className="px-4 py-2">{index + 1}</td>
                                     <td className="px-4 py-2">{user.name}</td>
                                     <td className="px-4 py-2">{user.email}</td>
-                                    <td className="flex gap-4">
-                                        <button className="mt-3 mb-3  px-4 py-2 rounded-md bg-yellow-300 text-black font-semibold hover:bg-yellow-400 transition-colors">Edit</button>
-                                        <button className="mt-3 mb-3  px-4 py-2 rounded-md bg-red-300 text-black font-semibold hover:bg-red-400 transition-colors">Delete</button>
+                                    <td className="flex gap-4 justify-center">
+                                        <button
+                                            onClick={() => onEdit(user)}
+                                            className="mt-3 mb-3 px-4 py-2 rounded-md bg-yellow-300 text-black font-semibold hover:bg-yellow-400 transition-colors"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => onDelete(user.id)}
+                                            className="mt-3 mb-3 px-4 py-2 rounded-md bg-red-300 text-black font-semibold hover:bg-red-400 transition-colors"
+                                        >
+                                            Delete
+                                        </button>
                                     </td>
                                 </tr>
                             ))
                         )}
-
                     </tbody>
                 </table>
             </div>
         </div>
-    )
-};
+    );
+}
