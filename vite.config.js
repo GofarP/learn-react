@@ -18,7 +18,7 @@ export default defineConfig({
         counter:resolve(__dirname,'counter.html'),
         note:resolve(__dirname,'note.html'),
         profile:resolve(__dirname,'profile.html'),
-        
+        user:resolve(__dirname, 'user.html')
       }
     }
   }
