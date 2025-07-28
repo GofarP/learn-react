@@ -7,7 +7,7 @@ export default function ProfileAddress() {
     return(
         <>
             <h2>Profile Address</h2>
-            <p>Alamat {profile.alamat}</p>
+            {/* <p>Alamat {profile.alamat}</p> */}
         </>
     )
 };
