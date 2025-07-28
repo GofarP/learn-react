@@ -55,6 +55,7 @@ export default function UserList({ users, onEdit, onDelete, loading }) {
                                 </tr>
                             ))
                         )}
+
                     </tbody>
                 </table>
             </div>

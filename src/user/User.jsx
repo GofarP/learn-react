@@ -13,28 +13,38 @@ export default function User() {
 
     const [loading, setLoading] = useState(true);
 
+    const fetchUsers = async () => {
+        try {
+            const res = await axios.get("https://gofarputraperdana.my.id/api/user");
+            dispatch({ type: "SET_USERS", payload: res.data.data });
+        } catch (err) {
+            console.error("Gagal memuat user", err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const res = await axios.get("https://gofarputraperdana.my.id/api/user");
-                dispatch({ type: "SET_USERS", payload: res.data.data });
-            } catch (err) {
-                console.error("Gagal memuat user", err);
-            }finally{
-                setLoading(false);
-            }
-        };
         fetchUsers();
     }, []);
 
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`https://gofarputraperdana.my.id/api/users/${id}`)
-            dispatch({ type: "DELETE_USER", payload: id });
+            const response = await axios.delete(`https://gofarputraperdana.my.id/api/users/${id}`)
+            if (response.status === 200 || response.status === 204) {
+                alert("User Berhasil Dihapus");
+                dispatch({ type: "DELETE_USER", payload: id });
+                fetchUsers();
+            } else {
+                alert("Penghapusan user tidak berhasil.")
+            }
         } catch (err) {
-            console.error("Gagal menghapus user", err);
+            if (err.response) {
+                alert("Gagal menghapus user. Status:")
+            } else {
+                alert("Gagal menghapus user. Error:");
+            }
         }
     }
 
@@ -59,7 +69,7 @@ export default function User() {
 
     return (
         <div>
-            <UserForm onSubmit={() => { }} editUser={state.editUser} />
+            <UserForm onSubmit={fetchUsers} editUser={state.editUser} />
             <UserList users={state.users}
                 onEdit={(user) => dispatch({ type: "SET_EDIT_USER", payload: user })}
                 onDelete={handleDelete} loading={loading} />

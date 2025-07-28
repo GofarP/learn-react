@@ -8,12 +8,12 @@ export default function UserForm({ onSubmit, editUser }) {
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
     const [errors, setErrors] = useState({});
 
-    useEffect(()=>{
-        if(editUser){
+    useEffect(() => {
+        if (editUser) {
             setName(editUser.name || "")
             setEmail(editUser.email || "")
         }
-    },[editUser]);
+    }, [editUser]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -26,14 +26,19 @@ export default function UserForm({ onSubmit, editUser }) {
                 password_confirmation: passwordConfirmation
             })
 
-            console.log("Berhasil", res.data);
-            setErrors({});
-            setEmail("");
-            setName("");
-            setPassword("");
-            setPasswordConfirmation("");
+            if (res.response.status == 200 || res.response.status == 201) {
+                alert("Sukses Menambah Data Baru")
 
-            onSubmit?.()
+                setErrors({});
+                setEmail("");
+                setName("");
+                setPassword("");
+                setPasswordConfirmation("");
+
+                onSubmit()
+            }
+
+
         }
         catch (e) {
             const validationErrors = e.response?.data?.errors || {};
