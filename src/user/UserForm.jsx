@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-export default function UserForm({ onSubmit, editUser }) {
+export default function UserForm({ onSubmit, editUser, onClearEditUser }) {
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
     const [password, setPassword] = useState("");
@@ -9,38 +9,47 @@ export default function UserForm({ onSubmit, editUser }) {
     const [errors, setErrors] = useState({});
 
     useEffect(() => {
-        if (editUser) {
-            setName(editUser.name || "")
-            setEmail(editUser.email || "")
-        }
+        setName(editUser ? editUser?.name : '');
+        setEmail(editUser ? editUser?.email : '');
+        setPassword("");
+        setPasswordConfirmation("");
     }, [editUser]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            const res = await axios.post("https://gofarputraperdana.my.id/api/users", {
-                name,
-                email,
-                password,
-                password_confirmation: passwordConfirmation
-            })
+            let res;
+            if (editUser) {
+                res = await axios.put(`https://gofarputraperdana.my.id/api/users/${editUser.id}`, {
+                    name,
+                    email,
+                    password,
+                    password_confirmation: passwordConfirmation,
+                });
+                alert("User berhasil diupdate");
+                onClearEditUser();
+                onSubmit();
 
-            if (res.response.status == 200 || res.response.status == 201) {
-                alert("Sukses Menambah Data Baru")
-
-                setErrors({});
-                setEmail("");
-                setName("");
-                setPassword("");
-                setPasswordConfirmation("");
-
-                onSubmit()
+            } else {
+                // CREATE USER
+                res = await axios.post("https://gofarputraperdana.my.id/api/users", {
+                    name,
+                    email,
+                    password,
+                    password_confirmation: passwordConfirmation,
+                });
+                alert("Sukses menambah data baru");
+                onSubmit();
             }
 
-
-        }
-        catch (e) {
+            // Reset form & error
+            setErrors({});
+            setEmail("");
+            setName("");
+            setPassword("");
+            setPasswordConfirmation("");
+        } catch (e) {
             const validationErrors = e.response?.data?.errors || {};
             const formattedErrors = {};
 
@@ -51,7 +60,7 @@ export default function UserForm({ onSubmit, editUser }) {
 
             setErrors(formattedErrors);
         }
-    }
+    };
 
     return (
         <div className="min-h-screen w-full bg-blue-500 flex items-center justify-center">
@@ -121,8 +130,14 @@ export default function UserForm({ onSubmit, editUser }) {
                         type="submit"
                         className="mt-4 w-full bg-white text-blue-500 font-bold py-2 px-4 rounded hover:bg-blue-100 transition"
                     >
-                        Submit
+                        {editUser ? "Update" : "Submit"}
                     </button>
+                   {editUser && (
+                        <button type="button" onClick={onClearEditUser} 
+                        className="mt-2 w-full bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-600 transition">
+                            Cancel Delete
+                        </button>
+                   )}
                 </div>
             </form>
         </div>

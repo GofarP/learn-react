@@ -1,14 +1,25 @@
 import { useState } from "react";
 
-export default function UserList({ users, onEdit, onDelete, loading }) {
+export default function UserList({ users, onEdit, onDelete, loading, perPage, setPerPage }) {
     const [search, setSearch] = useState("");
 
     return (
-        <div className="min-h-screen bg-gray-100 p-4">
-            <div className="flex justify-end mb-5">
+        <div className="min-h-screen bg-white p-4">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-2 mb-5">
+                <select
+                    className="border border-purple-500 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-300 transition"
+                    value={perPage}
+                    onChange={(e) => setPerPage(parseInt(e.target.value))}
+                >
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
                 <input
-                    type="text" placeholder="Cari pengguna..."
-                    className="w-full sm:w-auto max-w-sm border border-purple-500 focus:ring-0 focus:outline-0 rounded px-3 py-2"
+                    type="text"
+                    placeholder="Cari pengguna..."
+                    className="w-full sm:w-auto max-w-sm border border-purple-500 focus:ring-2 focus:ring-purple-300 focus:outline-none rounded px-3 py-2 transition"
                     onChange={(e) => setSearch(e.target.value)}
                 />
             </div>
@@ -34,20 +45,20 @@ export default function UserList({ users, onEdit, onDelete, loading }) {
                             </tr>
                         ) : (
                             users.map((user, index) => (
-                                <tr key={user.id || index} className="bg-purple-50">
+                                <tr key={user.id || index} className="bg-purple-50 hover:bg-purple-100 transition">
                                     <td className="px-4 py-2">{index + 1}</td>
                                     <td className="px-4 py-2">{user.name}</td>
                                     <td className="px-4 py-2">{user.email}</td>
-                                    <td className="flex gap-4 justify-center">
+                                    <td className="flex gap-2 justify-center py-2">
                                         <button
                                             onClick={() => onEdit(user)}
-                                            className="mt-3 mb-3 px-4 py-2 rounded-md bg-yellow-300 text-black font-semibold hover:bg-yellow-400 transition-colors"
+                                            className="px-4 py-2 rounded-md bg-yellow-300 text-black font-semibold hover:bg-yellow-400 transition-colors"
                                         >
                                             Edit
                                         </button>
                                         <button
                                             onClick={() => onDelete(user.id)}
-                                            className="mt-3 mb-3 px-4 py-2 rounded-md bg-red-300 text-black font-semibold hover:bg-red-400 transition-colors"
+                                            className="px-4 py-2 rounded-md bg-red-300 text-black font-semibold hover:bg-red-400 transition-colors"
                                         >
                                             Delete
                                         </button>

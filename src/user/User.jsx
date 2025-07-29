@@ -1,9 +1,10 @@
 import { useImmerReducer } from "use-immer";
-import UserForm from "./UserForm";
-import "./Style.css";
-import UserList from "./UserList";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import ReactPaginate from "react-paginate";
+import UserForm from "./UserForm";
+import UserList from "./UserList";
+import "./Style.css";
 
 export default function User() {
     const [state, dispatch] = useImmerReducer(userReducer, {
@@ -12,11 +13,18 @@ export default function User() {
     });
 
     const [loading, setLoading] = useState(true);
+    const [pageCount, setPageCount] = useState(0);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [perPage, setPerPage] = useState(10);
 
-    const fetchUsers = async () => {
+    const fetchUsers = async (page = 1, limit = perPage) => {
+        setLoading(true);
         try {
-            const res = await axios.get("https://gofarputraperdana.my.id/api/user");
+            const res = await axios.get(
+                `https://gofarputraperdana.my.id/api/user?page=${page}&limit=${limit}`
+            );
             dispatch({ type: "SET_USERS", payload: res.data.data });
+            setPageCount(res.data.last_page || 1);
         } catch (err) {
             console.error("Gagal memuat user", err);
         } finally {
@@ -25,28 +33,29 @@ export default function User() {
     };
 
     useEffect(() => {
-        fetchUsers();
-    }, []);
+        fetchUsers(currentPage + 1, perPage);
+    }, [currentPage, perPage]);
 
 
     const handleDelete = async (id) => {
         try {
-            const response = await axios.delete(`https://gofarputraperdana.my.id/api/users/${id}`)
-            if (response.status === 200 || response.status === 204) {
-                alert("User Berhasil Dihapus");
+            const res = await axios.delete(
+                `https://gofarputraperdana.my.id/api/users/${id}`
+            );
+            if (res.status === 200 || res.status === 204) {
                 dispatch({ type: "DELETE_USER", payload: id });
-                fetchUsers();
-            } else {
-                alert("Penghapusan user tidak berhasil.")
+                alert("Berhasil dihapus!");
+                fetchUsers(currentPage + 1);
             }
         } catch (err) {
-            if (err.response) {
-                alert("Gagal menghapus user. Status:")
-            } else {
-                alert("Gagal menghapus user. Error:");
-            }
+            console.error("Gagal menghapus user", err);
+            alert("Gagal menghapus user.");
         }
-    }
+    };
+
+    const handlePageChange = ({ selected }) => {
+        setCurrentPage(selected);
+    };
 
     function userReducer(draft, action) {
         switch (action.type) {
@@ -55,6 +64,10 @@ export default function User() {
                 break;
             case "ADD_USER":
                 draft.users.unshift(action.payload);
+                break;
+            case "UPDATE_USER":
+                const index = draft.users.findIndex((u) => u.id === action.payload.id);
+                if (index !== -1) draft.users[index] = action.payload;
                 break;
             case "SET_EDIT_USER":
                 draft.editUser = action.payload;
@@ -69,10 +82,46 @@ export default function User() {
 
     return (
         <div>
-            <UserForm onSubmit={fetchUsers} editUser={state.editUser} />
-            <UserList users={state.users}
-                onEdit={(user) => dispatch({ type: "SET_EDIT_USER", payload: user })}
-                onDelete={handleDelete} loading={loading} />
+            <UserForm
+                editUser={state.editUser}
+                dispatch={dispatch}
+                onSubmit={() => fetchUsers(currentPage + 1)}
+                onClearEditUser={() =>
+                    dispatch({ type: "SET_EDIT_USER", payload: null })
+                }
+            />
+            <UserList
+                users={state.users}
+                loading={loading}
+                onEdit={(user) =>
+                    dispatch({ type: "SET_EDIT_USER", payload: user })
+                }
+                onDelete={handleDelete}
+                perPage={perPage}
+                setPerPage={setPerPage}
+            />
+            <div className="flex justify-end mt-4 mb-4 mr-4 overflow-x-auto">
+                <ReactPaginate
+                    breakLabel="..."
+                    nextLabel="Next"
+                    onPageChange={handlePageChange}
+                    pageRangeDisplayed={3}
+                    marginPagesDisplayed={1}
+                    pageCount={pageCount}
+                    containerClassName="flex justify-end gap-2 mt-4 mb-4"
+                    pageClassName="border border-gray-300 rounded-md overflow-hidden"
+                    pageLinkClassName="block w-full h-full px-4 py-2 text-center cursor-pointer hover:bg-gray-200"
+                    activeClassName="bg-purple-700 text-white font-bold"
+                    activeLinkClassName="block w-full h-full px-4 py-2"
+                    previousClassName="border border-gray-300 rounded-md overflow-hidden"
+                    previousLinkClassName="block w-full h-full px-4 py-2 text-center cursor-pointer hover:bg-gray-200"
+                    nextClassName="border border-gray-300 rounded-md overflow-hidden"
+                    nextLinkClassName="block w-full h-full px-4 py-2 text-center cursor-pointer hover:bg-gray-200"
+                />
+
+
+
+            </div>
         </div>
     );
 }
