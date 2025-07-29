@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function UserList({ users, onEdit, onDelete, loading, perPage, setPerPage }) {
+export default function UserList({ users, onEdit, onDelete, loading, perPage, setPerPage, onError }) {
     const [search, setSearch] = useState("");
 
     return (
@@ -42,6 +42,10 @@ export default function UserList({ users, onEdit, onDelete, loading, perPage, se
                         ) : users.length === 0 ? (
                             <tr>
                                 <td colSpan="4" className="py-4">Tidak ada data</td>
+                            </tr>
+                        ) : onError?(
+                            <tr>
+                                <td colSpan="4" className="py-4">Error mengambil Data Pengguna</td>
                             </tr>
                         ) : (
                             users.map((user, index) => (

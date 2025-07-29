@@ -17,7 +17,6 @@ export default function UserForm({ onSubmit, editUser, onClearEditUser }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         try {
             let res;
             if (editUser) {
@@ -32,7 +31,6 @@ export default function UserForm({ onSubmit, editUser, onClearEditUser }) {
                 onSubmit();
 
             } else {
-                // CREATE USER
                 res = await axios.post("https://gofarputraperdana.my.id/api/users", {
                     name,
                     email,
@@ -57,7 +55,7 @@ export default function UserForm({ onSubmit, editUser, onClearEditUser }) {
                 const val = validationErrors[key];
                 formattedErrors[key] = Array.isArray(val) ? val : [val];
             }
-
+            
             setErrors(formattedErrors);
         }
     };

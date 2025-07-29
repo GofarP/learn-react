@@ -16,6 +16,7 @@ export default function User() {
     const [pageCount, setPageCount] = useState(0);
     const [currentPage, setCurrentPage] = useState(0);
     const [perPage, setPerPage] = useState(10);
+    const [error, setError]=useState(false);
 
     const fetchUsers = async (page = 1, limit = perPage) => {
         setLoading(true);
@@ -26,6 +27,7 @@ export default function User() {
             dispatch({ type: "SET_USERS", payload: res.data.data });
             setPageCount(res.data.last_page || 1);
         } catch (err) {
+            setError(true)
             console.error("Gagal memuat user", err);
         } finally {
             setLoading(false);
@@ -93,6 +95,7 @@ export default function User() {
             <UserList
                 users={state.users}
                 loading={loading}
+                onError={error}
                 onEdit={(user) =>
                     dispatch({ type: "SET_EDIT_USER", payload: user })
                 }
@@ -118,8 +121,6 @@ export default function User() {
                     nextClassName="border border-gray-300 rounded-md overflow-hidden"
                     nextLinkClassName="block w-full h-full px-4 py-2 text-center cursor-pointer hover:bg-gray-200"
                 />
-
-
 
             </div>
         </div>
