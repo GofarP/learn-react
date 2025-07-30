@@ -20,7 +20,8 @@ export default defineConfig({
         profile:resolve(__dirname,'profile.html'),
         user:resolve(__dirname, 'user.html'),
         timer:resolve(__dirname, 'timer.html'),
-        guest:resolve(__dirname,'guest.html')
+        guest:resolve(__dirname,'guest.html'),
+        product:resolve(__dirname,'product.html')
       }
     }
   }
