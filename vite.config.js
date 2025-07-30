@@ -21,7 +21,8 @@ export default defineConfig({
         user:resolve(__dirname, 'user.html'),
         timer:resolve(__dirname, 'timer.html'),
         guest:resolve(__dirname,'guest.html'),
-        product:resolve(__dirname,'product.html')
+        product:resolve(__dirname,'product.html'),
+        product:resolve(__dirname,'online.html')
       }
     }
   }

@@ -3,22 +3,33 @@ import Product from "./Product";
 
 export default function ProductList() {
   const [products, setProducts] = useState([]);
-  const loaded = useRef(false);
-    
-  useEffect(() => {
-    if (!loaded.current) {
-      fetch("/product.json")
-        .then((response) => response.json())
-        .then((data) => {
-          setProducts(data);
-          loaded.current = true;
-        });
+  const [load, setLoad]=useState(false)
+
+    function handleClick(){
+        setLoad(true)
     }
-  }, []); // <--- Tambahkan dependency array
+
+    useEffect(()=>{
+        console.log("UseEffect")
+    },[])
+
+    useEffect(()=>{
+
+        async function fetchProducts() {
+            const response=await fetch("/product.json")
+            const data=await response.json();
+            setProducts(data)
+        }
+        if(load){
+           fetchProducts()
+        }
+    },[load])
 
   return (
     <>
       <h1>Product List</h1>
+      <button onClick={handleClick}>Load Products</button>
+
       {products.map((product) => (
         <Product key={product.id} product={product} />
       ))}
